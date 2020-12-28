@@ -23,6 +23,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 }
 
 int main(int argc, char* argv[]) {
+    std::cout<<"basladi\n";
     scene.loadFromXml(argv[1]);
 
     glfwSetErrorCallback(errorCallback);
