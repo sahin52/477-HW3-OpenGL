@@ -12,7 +12,14 @@ Vec3f normalize(const Vec3f &v)
     result.z = v.z / uzunluk;
     return result;
 }
-
+float* vec4(Vec3f v3, float f){
+    float * res = new float[4];
+    res[0] = v3.x;
+    res[1] = v3.y;
+    res[2] = v3.z;
+    res[3] = f;
+    return res;
+}
 
 
 
