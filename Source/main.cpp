@@ -2,7 +2,7 @@
 #include "parser.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
+#include "utils.h"
 //////-------- Global Variables -------/////////
 
 GLuint gpuVertexBuffer;
@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
 
     window = glfwCreateWindow(scene.camera.image_width, scene.camera.image_height, "CENG477 - HW3", NULL, NULL);
     if (!window) {
+        printf("Failed to open GLFW window.");
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
@@ -77,19 +78,32 @@ int main(int argc, char* argv[]) {
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_INDEX_ARRAY);
 
-    gluLookAt(scene.camera.gaze.x,scene.camera.gaze.y,scene.camera.gaze.z,scene.camera.position.x,scene.camera.position.y,scene.camera.position.z,
-                            scene.camera.up.x,scene.camera.up.y,scene.camera.up.z);//TODO 
+    auto gaze = normalize(scene.camera.gaze);
+
+    glMatrixMode(GL_PROJECTION);
+    glFrustum(scene.camera.near_plane.x,scene.camera.near_plane.y,scene.camera.near_plane.z,scene.camera.near_plane.w,scene.camera.near_distance,scene.camera.far_distance);
+    glMatrixMode(GL_MODELVIEW);
+    gluLookAt(scene.camera.position.x,scene.camera.position.y,scene.camera.position.z,
+        scene.camera.gaze.x*scene.camera.near_distance+scene.camera.position.x, scene.camera.gaze.y*scene.camera.near_distance+scene.camera.position.y,scene.camera.gaze.z*scene.camera.near_distance+scene.camera.position.z,
+        scene.camera.up.x,scene.camera.up.y,scene.camera.up.z//TODO not sure
+    );
+
+    // gluLookAt(scene.camera.gaze.x,scene.camera.gaze.y,scene.camera.gaze.z,scene.camera.position.x,scene.camera.position.y,scene.camera.position.z,
+    //                         scene.camera.up.x,scene.camera.up.y,scene.camera.up.z);//TODO 
+    
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
+    //glScalef(0.5,0.5,0.5);
 
     while(!glfwWindowShouldClose(window)) {
         //MAIN LOOP
-        //glfwWaitEvents(); // not quite sure what this is for
+        glfwWaitEvents(); // not quite sure what this is for
         renderScene();
 
+        //showFPS(window)
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -97,7 +111,14 @@ int main(int argc, char* argv[]) {
 
     glfwDestroyWindow(window);
     glfwTerminate();
-
+//     GLfloat ambColor [ 4 ] = {<ar>, <ag>, <ab>, 1 . 0 } ;
+// GLfloat diffColor [ 4 ] = {<dr>, <dg>, <db>, 1 . 0 } ;
+// GLfloat specColor [ 4 ] = {<sr>, <sg>, <sb>, 1 . 0 } ;
+// GLfloat specExp [ 1 ] = {<specular exponent >};
+// glMaterialfv ( GL_FRONT , GL_AMBIENT , ambColor ) ;
+// glMaterialfv ( GL_FRONT , GL_DIFFUSE , diffColor ) ;
+// glMaterialfv ( GL_FRONT , GL_SPECULAR , specColor ) ;
+// glMaterialfv ( GL_FRONT , GL_SHININESS , specExp ) ;
     exit(EXIT_SUCCESS);
 
     return 0;
