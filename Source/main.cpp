@@ -28,15 +28,8 @@ void renderScene(){
     int height;
 
     glfwGetFramebufferSize(window, &width, &height);
-    glColor3f(scene.materials[scene.meshes[0].material_id-1].ambient.x,scene.materials[scene.meshes[0].material_id-1].ambient.y,scene.materials[scene.meshes[0].material_id-1].ambient.z);
-    glBegin(GL_TRIANGLES);
-        glVertex3f(scene.vertex_data[scene.meshes[0].faces[0].v0_id-1].x,scene.vertex_data[scene.meshes[0].faces[0].v0_id-1].y,scene.vertex_data[scene.meshes[0].faces[0].v0_id-1].z);
-        glVertex3f(scene.vertex_data[scene.meshes[0].faces[0].v1_id-1].x,scene.vertex_data[scene.meshes[0].faces[0].v1_id-1].y,scene.vertex_data[scene.meshes[0].faces[0].v1_id-1].z);
-        glVertex3f(scene.vertex_data[scene.meshes[0].faces[0].v2_id-1].x,scene.vertex_data[scene.meshes[0].faces[0].v2_id-1].y,scene.vertex_data[scene.meshes[0].faces[0].v2_id-1].z);
-        glVertex3f(scene.vertex_data[scene.meshes[0].faces[1].v0_id-1].x,scene.vertex_data[scene.meshes[0].faces[1].v0_id-1].y,scene.vertex_data[scene.meshes[0].faces[1].v0_id-1].z);
-        glVertex3f(scene.vertex_data[scene.meshes[0].faces[1].v1_id-1].x,scene.vertex_data[scene.meshes[0].faces[1].v1_id-1].y,scene.vertex_data[scene.meshes[0].faces[1].v1_id-1].z);
-        glVertex3f(scene.vertex_data[scene.meshes[0].faces[1].v2_id-1].x,scene.vertex_data[scene.meshes[0].faces[1].v2_id-1].y,scene.vertex_data[scene.meshes[0].faces[1].v2_id-1].z);
-    glEnd();
+    glViewport(0, 0, width, height);
+
     for(int i=0;i<scene.meshes.size();i++){
         glColor3f(scene.materials[scene.meshes[i].material_id-1].ambient.x,scene.materials[scene.meshes[i].material_id-1].ambient.y,scene.materials[scene.meshes[i].material_id-1].ambient.z);//TEMP
         for(auto face: scene.meshes[i].faces){
@@ -45,8 +38,7 @@ void renderScene(){
                 glVertex3f(scene.vertex_data[face.v1_id-1].x,scene.vertex_data[face.v1_id-1].y,scene.vertex_data[face.v1_id-1].z);
                 glVertex3f(scene.vertex_data[face.v2_id-1].x,scene.vertex_data[face.v2_id-1].y,scene.vertex_data[face.v2_id-1].z);
             glEnd();
-        }
-        
+        }   
     }
 
         
@@ -61,15 +53,15 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
     window = glfwCreateWindow(scene.camera.image_width, scene.camera.image_height, "CENG477 - HW3", NULL, NULL);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
-
+    
     glfwMakeContextCurrent(window);
 
     GLenum err = glewInit();
@@ -84,8 +76,14 @@ int main(int argc, char* argv[]) {
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_INDEX_ARRAY);
+
     gluLookAt(scene.camera.gaze.x,scene.camera.gaze.y,scene.camera.gaze.z,scene.camera.position.x,scene.camera.position.y,scene.camera.position.z,
-                            scene.camera.up.x,scene.camera.up.y,scene.camera.up.z);
+                            scene.camera.up.x,scene.camera.up.y,scene.camera.up.z);//TODO 
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
 
     while(!glfwWindowShouldClose(window)) {
         //MAIN LOOP
