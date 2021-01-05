@@ -56,7 +56,7 @@ Vec3f cross(const Vec3f &v1,const Vec3f &v2)
 float* normal(Vec3f v0, Vec3f v1, Vec3f v2){
     //
     float * res = new float[3];
-    Vec3f norm = cross(Vec3fminus(v1,v0),Vec3fminus(v2,v0));
+    Vec3f norm = normalize(cross(Vec3fminus(v1,v0),Vec3fminus(v2,v0)));
     res[0]=norm.x;
     res[1]=norm.y;
     res[2]=norm.z;

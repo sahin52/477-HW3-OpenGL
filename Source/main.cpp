@@ -90,11 +90,11 @@ void renderScene(){
         for(auto face: scene.meshes[i].faces){
             
             glBegin(GL_TRIANGLES);
-            //    glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
+                glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
                 glVertex3f(scene.vertex_data[face.v0_id-1].x,scene.vertex_data[face.v0_id-1].y,scene.vertex_data[face.v0_id-1].z);
-            //    glNormal3fv(normal(scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1]));
+                glNormal3fv(normal(scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1]));
                 glVertex3f(scene.vertex_data[face.v1_id-1].x,scene.vertex_data[face.v1_id-1].y,scene.vertex_data[face.v1_id-1].z);
-            //    glNormal3fv(normal(scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1]));
+                glNormal3fv(normal(scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1]));
                 glVertex3f(scene.vertex_data[face.v2_id-1].x,scene.vertex_data[face.v2_id-1].y,scene.vertex_data[face.v2_id-1].z);
             glEnd();
         }  
