@@ -17,6 +17,29 @@ static void errorCallback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
 }
 
+double lastTime;
+int nbFrames;
+void showFPS(GLFWwindow *pWindow)
+{
+    // Measure speed
+     double currentTime = glfwGetTime();
+     double delta = currentTime - lastTime;
+	 char ss[500] = {};
+     nbFrames++;
+     if ( delta >= 1.0 ){ // If last cout was more than 1 sec ago
+         //cout << 1000.0/double(nbFrames) << endl;
+
+         double fps = ((double)(nbFrames)) / delta;
+
+         sprintf(ss,"Spheres. %lf FPS",fps);
+
+         glfwSetWindowTitle(pWindow, ss);
+
+         nbFrames = 0;
+         lastTime = currentTime;
+     }
+}
+
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -126,8 +149,20 @@ int main(int argc, char* argv[]) {
 
     // gluLookAt(scene.camera.gaze.x,scene.camera.gaze.y,scene.camera.gaze.z,scene.camera.position.x,scene.camera.position.y,scene.camera.position.z,
     //                         scene.camera.up.x,scene.camera.up.y,scene.camera.up.z);//TODO 
-    
     glEnable(GL_LIGHTING);
+    if(scene.culling_enabled==1){
+        glEnable(GL_CULL_FACE);
+        if(scene.culling_face==1){
+            glCullFace(GL_FRONT);
+        }
+        else{
+            glCullFace(GL_BACK);
+        }
+    }
+    else{
+        glDisable(GL_CULL_FACE);
+    }
+
     // glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     // glEnable(GL_COLOR_MATERIAL);
     //glScalef(0.5,0.5,0.5);
@@ -152,12 +187,12 @@ int main(int argc, char* argv[]) {
         //glfwWaitEvents(); // not quite sure what this is for
         renderScene();
 
-        //showFPS(window)
+        showFPS(window);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+    glDisable(GL_CULL_FACE);
     glfwDestroyWindow(window);
     glfwTerminate();
 //     GLfloat ambColor [ 4 ] = {<ar>, <ag>, <ab>, 1 . 0 } ;
