@@ -49,6 +49,9 @@ void renderScene(){
     GLfloat temp;
     int width;
     int height;
+    //glEnable(GL_DEPTH_TEST);
+    //glClearDepth(1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
@@ -92,8 +95,10 @@ void renderScene(){
             glBegin(GL_TRIANGLES);
                 glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
                 glVertex3f(scene.vertex_data[face.v0_id-1].x,scene.vertex_data[face.v0_id-1].y,scene.vertex_data[face.v0_id-1].z);
+                
                 glNormal3fv(normal(scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1]));
                 glVertex3f(scene.vertex_data[face.v1_id-1].x,scene.vertex_data[face.v1_id-1].y,scene.vertex_data[face.v1_id-1].z);
+                
                 glNormal3fv(normal(scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1]));
                 glVertex3f(scene.vertex_data[face.v2_id-1].x,scene.vertex_data[face.v2_id-1].y,scene.vertex_data[face.v2_id-1].z);
             glEnd();
@@ -186,7 +191,8 @@ int main(int argc, char* argv[]) {
         glLightfv(GL_LIGHT0 + i+1, GL_SPECULAR, col);
     }
 
-
+    glEnable(GL_DEPTH_TEST);
+    // glShadeModel(GL_FLAT);
 
     while(!glfwWindowShouldClose(window)) {
         //MAIN LOOP
