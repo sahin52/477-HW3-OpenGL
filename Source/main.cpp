@@ -33,7 +33,7 @@ void renderScene(){
     for(int i=0;i<scene.meshes.size();i++){
         //glColor3f(scene.materials[scene.meshes[i].material_id-1].ambient.x,scene.materials[scene.meshes[i].material_id-1].ambient.y,scene.materials[scene.meshes[i].material_id-1].ambient.z);//TEMP
         GLfloat ambColor [ 4 ] = {scene.materials[scene.meshes[i].material_id-1].ambient.x,scene.materials[scene.meshes[i].material_id-1].ambient.y, scene.materials[scene.meshes[i].material_id-1].ambient.z, 1.0 } ;
-        GLfloat diffColor [ 4 ] = {scene.materials[scene.meshes[i].material_id-1].diffuse.x, scene.materials[scene.meshes[i].material_id-1].diffuse.x, scene.materials[scene.meshes[i].material_id-1].diffuse.x, 1.0 } ;
+        GLfloat diffColor [ 4 ] = {scene.materials[scene.meshes[i].material_id-1].diffuse.x, scene.materials[scene.meshes[i].material_id-1].diffuse.y, scene.materials[scene.meshes[i].material_id-1].diffuse.z, 1.0 } ;
         GLfloat specColor [ 4 ] = {scene.materials[scene.meshes[i].material_id-1].specular.x, scene.materials[scene.meshes[i].material_id-1].specular.y, scene.materials[scene.meshes[i].material_id-1].specular.z, 1.0 } ;
         GLfloat specExp [ 1 ] = {scene.materials[scene.meshes[i].material_id-1].phong_exponent};
         glMaterialfv ( GL_FRONT , GL_AMBIENT , ambColor ) ;
