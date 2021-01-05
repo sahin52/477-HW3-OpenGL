@@ -19,7 +19,7 @@ static void errorCallback(int error, const char* description) {
 
 double lastTime;
 int nbFrames;
-void showFPS(GLFWwindow *pWindow)
+void showFPS(GLFWwindow *pWindow,char * name)
 {
     // Measure speed
      double currentTime = glfwGetTime();
@@ -31,7 +31,7 @@ void showFPS(GLFWwindow *pWindow)
 
          double fps = ((double)(nbFrames)) / delta;
 
-         sprintf(ss,"Spheres. %lf FPS",fps);
+         sprintf(ss, "CENG 477. %s %lf FPS",name,fps);
 
          glfwSetWindowTitle(pWindow, ss);
 
@@ -91,7 +91,7 @@ void renderScene(){
             printf("Error! Unknown type of mesh");
         }
         for(auto face: scene.meshes[i].faces){
-            
+            //glShadeModel(GL_SMOOTH);
             glBegin(GL_TRIANGLES);
                 glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
                 glVertex3f(scene.vertex_data[face.v0_id-1].x,scene.vertex_data[face.v0_id-1].y,scene.vertex_data[face.v0_id-1].z);
@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
         //glfwWaitEvents(); // not quite sure what this is for
         renderScene();
 
-        showFPS(window);
+        showFPS(window,argv[1]);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
