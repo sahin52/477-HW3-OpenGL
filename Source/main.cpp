@@ -31,6 +31,23 @@ void renderScene(){
     glViewport(0, 0, width, height);
 
     for(int i=0;i<scene.meshes.size();i++){
+        glPushMatrix();
+        
+        for(int j=scene.meshes[i].transformations.size()-1;j>=0;j--){
+            auto transformations = scene.meshes[i].transformations;
+            if(transformations[j].transformation_type=="Translation"){
+                auto translation = scene.translations[transformations[j].id-1];
+                glTranslatef(GLfloat(translation.x),GLfloat(translation.y),GLfloat(translation.z));
+            }
+            else if(transformations[j].transformation_type=="Rotation"){
+                auto rotation  = scene.rotations[transformations[j].id-1];
+                glRotatef(GLfloat(rotation.x),GLfloat(rotation.y),GLfloat(rotation.z),GLfloat(rotation.w));
+            }else{
+                auto scaling =  scene.scalings[transformations[j].id-1];
+                glScalef(GLfloat(scaling.x),GLfloat(scaling.y),GLfloat(scaling.z));
+            }
+        }
+
         //glColor3f(scene.materials[scene.meshes[i].material_id-1].ambient.x,scene.materials[scene.meshes[i].material_id-1].ambient.y,scene.materials[scene.meshes[i].material_id-1].ambient.z);//TEMP
         GLfloat ambColor [ 4 ] = {scene.materials[scene.meshes[i].material_id-1].ambient.x,scene.materials[scene.meshes[i].material_id-1].ambient.y, scene.materials[scene.meshes[i].material_id-1].ambient.z, 1.0 } ;
         GLfloat diffColor [ 4 ] = {scene.materials[scene.meshes[i].material_id-1].diffuse.x, scene.materials[scene.meshes[i].material_id-1].diffuse.y, scene.materials[scene.meshes[i].material_id-1].diffuse.z, 1.0 } ;
@@ -40,15 +57,21 @@ void renderScene(){
         glMaterialfv ( GL_FRONT , GL_DIFFUSE , diffColor ) ;
         glMaterialfv ( GL_FRONT , GL_SPECULAR , specColor ) ;
         glMaterialfv ( GL_FRONT , GL_SHININESS , specExp ) ;
-
+        
         for(auto face: scene.meshes[i].faces){
+            
             glBegin(GL_TRIANGLES);
+            //    glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
                 glVertex3f(scene.vertex_data[face.v0_id-1].x,scene.vertex_data[face.v0_id-1].y,scene.vertex_data[face.v0_id-1].z);
+            //    glNormal3fv(normal(scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1]));
                 glVertex3f(scene.vertex_data[face.v1_id-1].x,scene.vertex_data[face.v1_id-1].y,scene.vertex_data[face.v1_id-1].z);
+            //    glNormal3fv(normal(scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1]));
                 glVertex3f(scene.vertex_data[face.v2_id-1].x,scene.vertex_data[face.v2_id-1].y,scene.vertex_data[face.v2_id-1].z);
             glEnd();
         }  
-         
+        
+        glPopMatrix();
+
     }
 
         
