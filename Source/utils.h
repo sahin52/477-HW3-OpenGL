@@ -63,5 +63,8 @@ float* normal(Vec3f v0, Vec3f v1, Vec3f v2){
     return res;
 }
 
+float * actualNormal(const Scene &scene){
+    
+}
 
 #endif
