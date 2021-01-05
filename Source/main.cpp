@@ -80,7 +80,13 @@ void renderScene(){
         glMaterialfv ( GL_FRONT , GL_DIFFUSE , diffColor ) ;
         glMaterialfv ( GL_FRONT , GL_SPECULAR , specColor ) ;
         glMaterialfv ( GL_FRONT , GL_SHININESS , specExp ) ;
-        
+        if(scene.meshes[i].mesh_type=="Solid"){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }else if(scene.meshes[i].mesh_type=="Wireframe"){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else{
+            printf("Error! Unknown type of mesh");
+        }
         for(auto face: scene.meshes[i].faces){
             
             glBegin(GL_TRIANGLES);
