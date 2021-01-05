@@ -8,3 +8,11 @@ full:
 	make horseandmug
 justhorse:
 	./hw3 Samples/horse.xml
+horse_and_mug_reversed:
+	./hw3 Samples/horse_and_mug_reversed.xml
+horse_and_mug_reversed_frontface_culled:
+	./hw3 Samples/horse_and_mug_reversed_frontface_culled.xml
+horse_and_mug_frontface_culled:
+	./hw3 Samples/horse_and_mug_frontface_culled.xml
+horse_and_mug_backface_culled:
+	./hw3 Samples/horse_and_mug_backface_culled.xml
