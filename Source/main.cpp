@@ -9,7 +9,7 @@ using namespace std;
 GLuint gpuVertexBuffer;
 GLuint gpuNormalBuffer;
 GLuint gpuIndexBuffer;
-
+float **** actualNormals;
 // Sample usage for reading an XML scene file
 parser::Scene scene;
 static GLFWwindow* window = NULL;
@@ -97,17 +97,17 @@ void renderScene(){
             glBegin(GL_TRIANGLES);
                 
                 //glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
-                //ac
-                glNormal3fv(actualNormal(scene,face.v0_id,scene.meshes[i]));
+                
+                glNormal3fv(actualNormals[i][j][0]);
                 glVertex3f(scene.vertex_data[face.v0_id-1].x,scene.vertex_data[face.v0_id-1].y,scene.vertex_data[face.v0_id-1].z);
                 
                 //glNormal3fv(normal(scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1]));
-                glNormal3fv(actualNormal(scene,face.v1_id,scene.meshes[i]));
+                glNormal3fv(actualNormals[i][j][1]);
                 glVertex3f(scene.vertex_data[face.v1_id-1].x,scene.vertex_data[face.v1_id-1].y,scene.vertex_data[face.v1_id-1].z);
                 
                 //glNormal3fv(normal(scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1]));
                 
-                glNormal3fv(actualNormal(scene,face.v2_id,scene.meshes[i]));
+                glNormal3fv(actualNormals[i][j][2]);
                 glVertex3f(scene.vertex_data[face.v2_id-1].x,scene.vertex_data[face.v2_id-1].y,scene.vertex_data[face.v2_id-1].z);
             glEnd();
         }  
@@ -120,22 +120,27 @@ void renderScene(){
 }
 
 float **** getVertexNormalData(const Scene &scene){
+    float **** res = new float***[scene.meshes.size()];
     for(int i=0;i<scene.meshes.size();i++){
         auto mesh = scene.meshes[i];
-        for(int j=0;j<scene.meshes[i].faces.size();j++){
+        res[i] = new float**[mesh.faces.size()];
+        for(int j=0;j<mesh.faces.size();j++){
             auto face = mesh.faces[j];
-            actualNormal(scene,face.v0_id,mesh);
+            res[i][j] = new float*[3];
+            res[i][j][0]=actualNormal(scene,face.v0_id,mesh);
+            res[i][j][1]=actualNormal(scene,face.v1_id,mesh);
+            res[i][j][2]=actualNormal(scene,face.v2_id,mesh);
         }
-
     }
+    return res;
 }
 
 
 int main(int argc, char* argv[]) {
-    std::cout<<"basladi\n";
+    std::cout<<"Starting\n";
     scene.loadFromXml(argv[1]);
-
-    //auto actualNormals = getVertexNormalData(scene);
+    cout << "Pre-calculating vertex normal data, please wear your seatbelt";
+    actualNormals = getVertexNormalData(scene);
 
     glfwSetErrorCallback(errorCallback);
 
