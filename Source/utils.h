@@ -80,11 +80,11 @@ float * average(const vector<float*> &normals){
     return res;
 }
 
-float * actualNormal(const Scene &scene, int vertexId,const Mesh &mesh){
+float * actualNormal(const Scene &scene, int vertexId/*v0_id,v1_id,v2_id*/,const Mesh &mesh,float** &vertexNormalleri){
     //o meshin tum vertexIdlerine bakip bu id ile ayni id'ye sahip olan tum ucgenleri alip
     //bu ucgenlerin normallerini bulup ortalamasını almak lazım.
     std::vector<Face> faces;
-    vector<int> ids;
+    vector<int> ids;    
     for (int i =0;i<mesh.faces.size();i++){
         auto face = mesh.faces[i];
         if(face.v0_id==vertexId){
@@ -101,12 +101,29 @@ float * actualNormal(const Scene &scene, int vertexId,const Mesh &mesh){
     vector<float*> normals;
     for(int i =0;i<faces.size();i++){
         auto face = faces[i];
+        auto id = ids[i];
         auto temp = normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]);
         normals.push_back(temp);
+        // if(ids[i]==0){
+        //     vertexNormalleri[face.v0_id-1] = temp;
+        //     face.v0_id;
+        // }
+        // if(ids[i]==1){
+        //     vertexNormalleri[face.v1_id-1] = temp;
+        //     face.v1_id;
+        // }
+        // if(ids[i]==2){
+        //     vertexNormalleri[face.v2_id-1] = temp;
+        //     face.v2_id;
+        // }
+        //scene.vertex_data[ids[i]];
         //delete[] temp;
         //normals.push_back();
     }
-    return average(normals);
+    
+    auto averaj = average(normals);
+    vertexNormalleri[vertexId-1] = averaj;
+    return averaj;
 }
 
 #endif

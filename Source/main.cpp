@@ -120,6 +120,13 @@ void renderScene(){
 }
 
 float **** getVertexNormalData(const Scene &scene){
+    //auto vertices = scene.vertex_data;
+    //float*
+    float** vertexNormalleri = new float*[scene.vertex_data.size()];
+    for(int i=0;i<scene.vertex_data.size();i++){
+        vertexNormalleri[i] = nullptr;
+    }
+
     float **** res = new float***[scene.meshes.size()];
     for(int i=0;i<scene.meshes.size();i++){
         auto mesh = scene.meshes[i];
@@ -127,9 +134,18 @@ float **** getVertexNormalData(const Scene &scene){
         for(int j=0;j<mesh.faces.size();j++){
             auto face = mesh.faces[j];
             res[i][j] = new float*[3];
-            res[i][j][0]=actualNormal(scene,face.v0_id,mesh);
-            res[i][j][1]=actualNormal(scene,face.v1_id,mesh);
-            res[i][j][2]=actualNormal(scene,face.v2_id,mesh);
+            if(vertexNormalleri[face.v0_id-1]==nullptr)
+                res[i][j][0]=actualNormal(scene,face.v0_id,mesh,vertexNormalleri);
+            else    
+                res[i][j][0] = vertexNormalleri[face.v0_id-1];
+            if(vertexNormalleri[face.v1_id-1]==nullptr)
+                res[i][j][1]=actualNormal(scene,face.v1_id,mesh,vertexNormalleri);
+            else 
+                res[i][j][1] = vertexNormalleri[face.v1_id-1];
+            if(vertexNormalleri[face.v2_id-1]==nullptr)
+                res[i][j][2]=actualNormal(scene,face.v2_id,mesh,vertexNormalleri);
+            else
+                res[i][j][2] = vertexNormalleri[face.v2_id-1];
         }
     }
     return res;
@@ -139,7 +155,7 @@ float **** getVertexNormalData(const Scene &scene){
 int main(int argc, char* argv[]) {
     std::cout<<"Starting\n";
     scene.loadFromXml(argv[1]);
-    cout << "Pre-calculating vertex normal data, please wear your seatbelt";
+    cout << "Pre-calculating vertex normal data,\nThis can take up to 10 seconds!\nPlease wait!!!!!\n";
     actualNormals = getVertexNormalData(scene);
 
     glfwSetErrorCallback(errorCallback);
