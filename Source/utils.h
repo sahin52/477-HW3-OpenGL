@@ -1,5 +1,6 @@
 #include "parser.h"
-
+#include <vector>
+using namespace std;
 #ifndef __UTILSOPENGLHW3__
 #define __UTILSOPENGLHW3__
 using namespace parser;
@@ -36,7 +37,7 @@ Vec3f normalize(const Vec3f &v)
     result.z = v.z / uzunluk;
     return result;
 }
-float* vec4(Vec3f v3, float f){
+float* vec4(const Vec3f &v3,const float &f){
     float * res = new float[4];
     res[0] = v3.x;
     res[1] = v3.y;
@@ -53,7 +54,7 @@ Vec3f cross(const Vec3f &v1,const Vec3f &v2)
     result.x = x; result.y = y; result.z = z;
     return result;
 }
-float* normal(Vec3f v0, Vec3f v1, Vec3f v2){
+float* normal(const Vec3f &v0,const  Vec3f &v1,const Vec3f &v2){
     //
     float * res = new float[3];
     Vec3f norm = normalize(cross(Vec3fminus(v1,v0),Vec3fminus(v2,v0)));
@@ -63,8 +64,49 @@ float* normal(Vec3f v0, Vec3f v1, Vec3f v2){
     return res;
 }
 
-float * actualNormal(const Scene &scene){
-    
+float * average(const vector<float*> &normals){
+    float * res = new float[3];
+    res[0] = 0.;
+    res[1] = 0.;
+    res[2] = 0.;
+    for(auto normal: normals){
+        res[0] += normal[0];
+        res[1] += normal[1];
+        res[2] += normal[2];
+    }
+    res[0] = res[0]/(float)normals.size();
+    res[1] = res[1]/(float)normals.size();
+    res[2] = res[2]/(float)normals.size();
+    return res;
+}
+
+float * actualNormal(const Scene &scene, int vertexId,const Mesh &mesh){
+    //o meshin tum vertexIdlerine bakip bu id ile ayni id'ye sahip olan tum ucgenleri alip
+    //bu ucgenlerin normallerini bulup ortalamasını almak lazım.
+    std::vector<Face> faces;
+    vector<int> ids;
+    for (int i =0;i<mesh.faces.size();i++){
+        auto face = mesh.faces[i];
+        if(face.v0_id==vertexId){
+            ids.push_back(0);
+            faces.push_back(face);
+        }else if(face.v1_id==vertexId){
+            ids.push_back(1);
+            faces.push_back(face);
+        }else if(face.v2_id==vertexId){
+            ids.push_back(2);
+            faces.push_back(face);
+        }
+    }
+    vector<float*> normals;
+    for(int i =0;i<faces.size();i++){
+        auto face = faces[i];
+        auto temp = normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]);
+        normals.push_back(temp);
+        //delete[] temp;
+        //normals.push_back();
+    }
+    return average(normals);
 }
 
 #endif

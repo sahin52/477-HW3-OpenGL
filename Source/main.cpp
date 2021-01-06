@@ -3,8 +3,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "utils.h"
+#include <vector>
 //////-------- Global Variables -------/////////
-
+using namespace std;
 GLuint gpuVertexBuffer;
 GLuint gpuNormalBuffer;
 GLuint gpuIndexBuffer;
@@ -90,16 +91,23 @@ void renderScene(){
         }else{
             printf("Error! Unknown type of mesh");
         }
-        for(auto face: scene.meshes[i].faces){
+        for(int j=0;j<scene.meshes[i].faces.size();j++){
+            auto face = scene.meshes[i].faces[j];
             //glShadeModel(GL_SMOOTH);
             glBegin(GL_TRIANGLES);
-                glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
+                
+                //glNormal3fv(normal(scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1]));
+                //ac
+                glNormal3fv(actualNormal(scene,face.v0_id,scene.meshes[i]));
                 glVertex3f(scene.vertex_data[face.v0_id-1].x,scene.vertex_data[face.v0_id-1].y,scene.vertex_data[face.v0_id-1].z);
                 
-                glNormal3fv(normal(scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1]));
+                //glNormal3fv(normal(scene.vertex_data[face.v1_id-1],scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1]));
+                glNormal3fv(actualNormal(scene,face.v1_id,scene.meshes[i]));
                 glVertex3f(scene.vertex_data[face.v1_id-1].x,scene.vertex_data[face.v1_id-1].y,scene.vertex_data[face.v1_id-1].z);
                 
-                glNormal3fv(normal(scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1]));
+                //glNormal3fv(normal(scene.vertex_data[face.v2_id-1],scene.vertex_data[face.v0_id-1],scene.vertex_data[face.v1_id-1]));
+                
+                glNormal3fv(actualNormal(scene,face.v2_id,scene.meshes[i]));
                 glVertex3f(scene.vertex_data[face.v2_id-1].x,scene.vertex_data[face.v2_id-1].y,scene.vertex_data[face.v2_id-1].z);
             glEnd();
         }  
@@ -111,11 +119,23 @@ void renderScene(){
         
 }
 
+float **** getVertexNormalData(const Scene &scene){
+    for(int i=0;i<scene.meshes.size();i++){
+        auto mesh = scene.meshes[i];
+        for(int j=0;j<scene.meshes[i].faces.size();j++){
+            auto face = mesh.faces[j];
+            actualNormal(scene,face.v0_id,mesh);
+        }
+
+    }
+}
 
 
 int main(int argc, char* argv[]) {
     std::cout<<"basladi\n";
     scene.loadFromXml(argv[1]);
+
+    //auto actualNormals = getVertexNormalData(scene);
 
     glfwSetErrorCallback(errorCallback);
 
@@ -192,7 +212,20 @@ int main(int argc, char* argv[]) {
     }
 
     glEnable(GL_DEPTH_TEST);
-    // glShadeModel(GL_FLAT);
+    // // glShadeModel(GL_FLAT);
+    // auto meshVertexJointVertices = std::vector<std::vector<std::vector<int>>>();
+    // for(auto mesh: scene.meshes){
+    //     auto vertexJoints = std::vector<std::vector<int>>();
+
+    //     for(auto face:mesh.faces){
+    //         //auto jointFor;
+    //         face.v0_id;
+    //         face.v1_id;
+    //         face.v2_id;
+    //     }
+
+    //     meshVertexJointVertices.push_back(vertexJoints);
+    // }
 
     while(!glfwWindowShouldClose(window)) {
         //MAIN LOOP
